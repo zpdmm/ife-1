@@ -16,9 +16,9 @@
  */
  function addAqiData() {
  	var cityTrim = city_input.value.trim();//获取用户输入的数据,关于trim???
- 	var value_trim = value_input.value.trim();
+ 	var value_trim = value_input.value.trim();//空格处理在trim()中
 
- 	//正则
+ 	//正则判断
  	if(!cityTrim.match(/^[A-Za-z\u4E00-\u9FA5]+$/)){
  		alert("城市名必须为中英文字符！")
  		return;
@@ -27,10 +27,14 @@
  		alert("空气质量指数必须为整数！")
  		return;
  	}
-   	aqiData[cityTrim] = value_trim;//因为city_tirm是变量。所以使用方括号而不是点,不加双引号
+   	aqiData[cityTrim] = value_trim;//因为city_tirm是变量，所以使用方括号而不是点,不用加双引号
  	// console.log(aqiData);
  }
 
+ String.prototype.trim = function() {
+  return this.replace(/[\s(^\s+)(\s+$)]/g, "")
+  // this.replace("\s+","");用于去除内部空格
+};
 /**
  * 渲染aqi-table表格
  */
@@ -70,8 +74,9 @@
  */
  function delBtnHandle(target) {
   // do sth.
-  var tr = target.parentElement.parentElement;
-  var cityTrim = tr.children[0].innerHTML;
+  var tr1 = target.parentNode.parentNode;//target就是接收的就是event.target即<button>标签，所以突tr1就是<tr>
+  var cityTrim = tr1.childNodes[0].innerHTML;//所以cityTrim就是城市名
+  // console.log(tr1);
   delete aqiData[cityTrim];
   renderAqiList();
 }
@@ -81,17 +86,11 @@ function init() {
   // 在这下面给add-btn绑定一个点击事件，点击时触发addBtnHandle函数
   document.getElementById("add-btn").addEventListener("click", addBtnHandle);
   // 想办法给aqi-table中的所有删除按钮绑定事件，触发delBtnHandle函数
-/*  document.getElementById("aqi-table").addEventListener("click", function(event){
-  	if(event.target.nodeName.toLowerCase() === 'button') delBtnHandle.call(null, event.target.dataset.cityTrim);
-  })*/
-table.addEventListener("click", function(event) {
-	if (event.target.nodeName.toLowerCase() === "button") delBtnHandle(event.target);
-})
+  table.addEventListener("click", function(event) {
+   if (event.target.nodeName.toLowerCase() === "button") delBtnHandle(event.target);
+ })
+/*删除部分是参照海贼兄弟队写的代码，关于target在http://www.cnblogs.com/leejersey/p/3801452.html中有讲解，
+就是把事件加到父级(table)上，触发执行效果。event.target是标准下的事件源就是要操作的元素，nodeName用来找标签*/
 }
 
 init();
-
-String.prototype.trim = function() {
-	return this.replace(/[\\s(^\s+)(\s+$)]/g, "")
-	// this.replace("\\s+","");
-};
