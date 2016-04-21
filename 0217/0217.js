@@ -67,7 +67,7 @@ function renderChart() {
    aqi_chart[0].style.cssText = 
    "display: flex; justify-content: center;align-items: flex-end; align-content:center;" +
    "margin: 10px auto; padding: 10px 10px 0;border: 1px solid rgb(152, 150, 150);height: 490px;background-color: rgb(235, 243, 251);";
-   color = '#'+(Math.random()*0xfff<<0).toString(16);
+   color = '#'+(~~(Math.random()*(1<<24))).toString(16);
    text += '<div style = "height:'+chartData[city_data]+'px; margin:0 2px; width: 300px;background-color:'+color+';"title="'+city_data+':'+chartData[city_data]+'"></div>';
  }
  aqi_chart[0].innerHTML = text;
